@@ -9,23 +9,25 @@ import pickle
 
 def getASRModel(language: str) -> nn.Module:
 
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
     if language == 'de':
 
         model, decoder, utils = torch.hub.load(repo_or_dir='snakers4/silero-models',
                                                model='silero_stt',
                                                language='de',
-                                               device=torch.device('cpu'))
+                                               device=device)
 
     elif language == 'en':
         model, decoder, utils = torch.hub.load(repo_or_dir='snakers4/silero-models',
                                                model='silero_stt',
                                                language='en',
-                                               device=torch.device('cpu'))
+                                               device=device)
     elif language == 'fr':
         model, decoder, utils = torch.hub.load(repo_or_dir='snakers4/silero-models',
                                                model='silero_stt',
                                                language='fr',
-                                               device=torch.device('cpu'))
+                                               device=device)
 
     return (model, decoder)
 
@@ -52,20 +54,20 @@ def getTTSModel(language: str) -> nn.Module:
     return model
 
 
-def getTranslationModel(language: str) -> nn.Module:
-    from transformers import AutoTokenizer
-    from transformers import AutoModelForSeq2SeqLM
-    if language == 'de':
-        model = AutoModelForSeq2SeqLM.from_pretrained(
-            "Helsinki-NLP/opus-mt-de-en")
-        tokenizer = AutoTokenizer.from_pretrained(
-            "Helsinki-NLP/opus-mt-de-en")
-        # Cache models to avoid Hugging face processing
-        with open('translation_model_de.pickle', 'wb') as handle:
-            pickle.dump(model, handle)
-        with open('translation_tokenizer_de.pickle', 'wb') as handle:
-            pickle.dump(tokenizer, handle)
-    else:
-        raise ValueError('Language not implemented')
+# def getTranslationModel(language: str) -> nn.Module:
+#     from transformers import AutoTokenizer
+#     from transformers import AutoModelForSeq2SeqLM
+#     if language == 'de':
+#         model = AutoModelForSeq2SeqLM.from_pretrained(
+#             "Helsinki-NLP/opus-mt-de-en")
+#         tokenizer = AutoTokenizer.from_pretrained(
+#             "Helsinki-NLP/opus-mt-de-en")
+#         # Cache models to avoid Hugging face processing
+#         with open('translation_model_de.pickle', 'wb') as handle:
+#             pickle.dump(model, handle)
+#         with open('translation_tokenizer_de.pickle', 'wb') as handle:
+#             pickle.dump(tokenizer, handle)
+#     else:
+#         raise ValueError('Language not implemented')
 
-    return model, tokenizer
+#     return model, tokenizer

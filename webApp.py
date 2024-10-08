@@ -20,10 +20,10 @@ def main():
     return render_template('main.html')
 
 
-@app.route(rootPath+'/getAudioFromText', methods=['POST'])
-def getAudioFromText():
-    event = {'body': json.dumps(request.get_json(force=True))}
-    return lambdaTTS.lambda_handler(event, [])
+# @app.route(rootPath+'/getAudioFromText', methods=['POST'])
+# def getAudioFromText():
+#     event = {'body': json.dumps(request.get_json(force=True))}
+#     return lambdaTTS.lambda_handler(event, [])
 
 
 @app.route(rootPath+'/getSample', methods=['POST'])
@@ -32,16 +32,22 @@ def getNext():
     return lambdaGetSample.lambda_handler(event, [])
 
 
+@app.route(rootPath+'/GetAccuracyFromRecordedAudioFile', methods=['POST'])
+def GetAccuracyFromRecordedAudioFile():
+
+    event = {'body': json.dumps(request.get_json(force=True))}
+    lambda_correct_output = lambdaSpeechToScore.lambda_handler_file(event, [])
+    return lambda_correct_output
+
 @app.route(rootPath+'/GetAccuracyFromRecordedAudio', methods=['POST'])
 def GetAccuracyFromRecordedAudio():
-
     event = {'body': json.dumps(request.get_json(force=True))}
     lambda_correct_output = lambdaSpeechToScore.lambda_handler(event, [])
     return lambda_correct_output
 
 
 if __name__ == "__main__":
-    language = 'de'
+    language = 'en'
     print(os.system('pwd'))
     webbrowser.open_new('http://127.0.0.1:3000/')
     app.run(host="0.0.0.0", port=3000)

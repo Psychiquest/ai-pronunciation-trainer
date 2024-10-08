@@ -9,7 +9,7 @@ import pronunciationTrainer
 
 
 def test_category(category: int, threshold_min: int, threshold_max: int):
-    event = {'body': json.dumps({'category': category, 'language': 'de'})}
+    event = {'body': json.dumps({'category': category, 'language': 'en'})}
     for _ in range(1000):
         response = lambdaGetSample.lambda_handler(event, [])
         response_dict = json.loads(response)
@@ -66,8 +66,8 @@ class TestPhonemConverter(unittest.TestCase):
 
 
 trainer_SST_lambda = {}
-trainer_SST_lambda['de'] = pronunciationTrainer.getTrainer("de")
-
+# trainer_SST_lambda['de'] = pronunciationTrainer.getTrainer("de")
+trainer_SST_lambda['en'] = pronunciationTrainer.getTrainer("en")
 
 class TestScore(unittest.TestCase):
 

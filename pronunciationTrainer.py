@@ -21,10 +21,7 @@ def getTrainer(language: str):
     model.eval()
     asr_model = AIModels.NeuralASR(model, decoder)
 
-    if language == 'de':
-        phonem_converter = RuleBasedModels.EpitranPhonemConverter(
-            epitran.Epitran('deu-Latn'))
-    elif language == 'en':
+    if language == 'en':
         phonem_converter = RuleBasedModels.EngPhonemConverter()
     else:
         raise ValueError('Language not implemented')

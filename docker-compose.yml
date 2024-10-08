@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "4000:3000"  # Expose internal port 3000 as 4000 externally
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development
