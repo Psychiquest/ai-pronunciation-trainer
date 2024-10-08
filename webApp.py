@@ -4,7 +4,6 @@ import os
 from flask_cors import CORS
 import json
 
-import lambdaTTS
 import lambdaSpeechToScore
 import lambdaGetSample
 

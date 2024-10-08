@@ -14,6 +14,12 @@ COPY requirements.txt .
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
+# Create directories for models and cache
+RUN mkdir -p /models/torch_cache /models/silero
+
+# Download Silero model
+RUN python -c "import torch; torch.hub.load(repo_or_dir='snakers4/silero-models', model='silero_stt', language='en', device='cpu')"
+
 # Copy the rest of the application code
 COPY . .
 
