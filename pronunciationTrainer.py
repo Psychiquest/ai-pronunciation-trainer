@@ -163,8 +163,8 @@ class PronunciationTrainer:
         for pair in real_and_transcribed_words_ipa:
 
             real_without_punctuation = self.removePunctuation(pair[0]).lower()
-            number_of_word_mismatches = WordMetrics.edit_distance_python(
-                real_without_punctuation, self.removePunctuation(pair[1]).lower())
+            number_of_word_mismatches = min(WordMetrics.edit_distance_python(
+                real_without_punctuation, self.removePunctuation(pair[1]).lower()), len(real_without_punctuation))
             total_mismatches += number_of_word_mismatches
             number_of_phonemes_in_word = len(real_without_punctuation)
             number_of_phonemes += number_of_phonemes_in_word
@@ -172,8 +172,7 @@ class PronunciationTrainer:
             current_words_pronunciation_accuracy.append(float(
                 number_of_phonemes_in_word-number_of_word_mismatches)/number_of_phonemes_in_word*100)
 
-        percentage_of_correct_pronunciations = (
-            number_of_phonemes-total_mismatches)/number_of_phonemes*100
+        percentage_of_correct_pronunciations = 100-((total_mismatches*100)/number_of_phonemes)
 
         return np.round(percentage_of_correct_pronunciations), current_words_pronunciation_accuracy
 
