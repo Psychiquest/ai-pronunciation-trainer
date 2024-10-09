@@ -8,6 +8,150 @@ import time
 offset_blank = 1
 TIME_THRESHOLD_MAPPING = 5.0
 
+import string
+
+# Function to calculate phoneme-based pronunciation accuracy
+def calculate_pronunciation_accuracy_with_diff(real_and_transcribed_words_ipa):
+    # Convert words to phonetic transcriptions
+    target_phonemes = " ".join([item[0] for item in real_and_transcribed_words_ipa])
+    spoken_phonemes = " ".join([item[1] for item in real_and_transcribed_words_ipa])
+
+    # Get the diff result using Myers algorithm for phonemes
+    diff_result = myers_diff_phonemes(target_phonemes, spoken_phonemes)
+
+    match_count = 0
+    total_count = len(target_phonemes)
+    penalty_count = 0  # Penalize for insertions and deletions
+
+    for operation, phoneme in diff_result:
+        if operation == 'MATCH':
+            match_count += 1
+        else:
+            penalty_count += 1  # Penalize for each insertion or deletion
+
+    # Calculate accuracy as the ratio of matching phonemes with penalties
+    effective_length = total_count + penalty_count  # Accounts for insertions
+    accuracy = match_count*100 / effective_length if effective_length > 0 else 0
+    return accuracy, "100"
+
+
+# Myers Diff Algorithm (adapted for phonemes)
+def myers_diff_phonemes(a, b):
+    n, m = len(a), len(b)
+    max_d = n + m
+    v = [0] * (2 * max_d + 1)
+    trace = []
+
+    for d in range(max_d + 1):
+        trace.append(list(v))
+        for k in range(-d, d + 1, 2):
+            if k == -d or (k != d and v[k - 1 + max_d] < v[k + 1 + max_d]):
+                x = v[k + 1 + max_d]
+            else:
+                x = v[k - 1 + max_d] + 1
+
+            y = x - k
+            while x < n and y < m and a[x] == b[y]:
+                x += 1
+                y += 1
+
+            v[k + max_d] = x
+
+            if x >= n and y >= m:
+                return backtrack(trace, a, b, n, m)
+
+    return []
+
+
+# Myers Diff Algorithm
+def myers_diff(a, b):
+    n, m = len(a), len(b)
+    max_d = n + m
+    v = [0] * (2 * max_d + 1)
+    trace = []
+
+    for d in range(max_d + 1):
+        trace.append(list(v))
+        for k in range(-d, d + 1, 2):
+            if k == -d or (k != d and v[k - 1 + max_d] < v[k + 1 + max_d]):
+                x = v[k + 1 + max_d]
+            else:
+                x = v[k - 1 + max_d] + 1
+
+            y = x - k
+            while x < n and y < m and a[x] == b[y]:
+                x += 1
+                y += 1
+
+            v[k + max_d] = x
+
+            if x >= n and y >= m:
+                return backtrack(trace, a, b, n, m)
+
+    return []
+
+# Backtrack to determine matched and unmatched characters
+def backtrack(trace, a, b, n, m):
+    d = len(trace) - 1
+    x, y = n, m
+    result = []
+
+    while d >= 0:
+        v = trace[d]
+        k = x - y
+        max_d = len(v) // 2
+
+        if k == -d or (k != d and v[k - 1 + max_d] < v[k + 1 + max_d]):
+            prev_k = k + 1
+        else:
+            prev_k = k - 1
+
+        prev_x = v[prev_k + max_d]
+        prev_y = prev_x - prev_k
+
+        while x > prev_x and y > prev_y:
+            result.append(('MATCH', a[x - 1]))
+            x -= 1
+            y -= 1
+
+        if x == prev_x:
+            result.append(('INSERT', b[y - 1]))
+            y -= 1
+        elif y == prev_y:
+            result.append(('DELETE', a[x - 1]))
+            x -= 1
+
+        d -= 1
+
+    result.reverse()
+    return result
+
+# Function to generate a "0" or "1" string based on matches
+def generate_match_string(a, b):
+    # Remove punctuations
+    a_clean = a
+    b_clean = b
+
+    # Get the diff result
+    diff_result = myers_diff(a_clean, b_clean)
+    
+    match_string = []
+    clean_index = 0
+
+    for char in a:
+        if char == ' ':
+            match_string.append(' ')
+        if char in string.punctuation:
+            match_string.append('1')
+        elif clean_index < len(diff_result) and diff_result[clean_index][0] == 'MATCH':
+            match_string.append('1')
+        else:
+            match_string.append('0')
+
+        clean_index += 1
+
+    return ''.join(match_string)
+
 
 def get_word_distance_matrix(words_estimated: list, words_real: list) -> np.array:
     number_of_real_words = len(words_real)

@@ -92,17 +92,18 @@ class PronunciationTrainer:
         start_time, end_time = self.getWordLocationsFromRecordInSeconds(
             word_locations, mapped_words_indices)
 
-        pronunciation_accuracy, current_words_pronunciation_accuracy = self.getPronunciationAccuracy(
+        pronunciation_accuracy, current_words_pronunciation_accuracy = wm.calculate_pronunciation_accuracy_with_diff(
             real_and_transcribed_words)  # _ipa
 
-        pronunciation_categories = self.getWordsPronunciationCategory(
-            current_words_pronunciation_accuracy)
+        # pronunciation_categories = self.getWordsPronunciationCategory(
+        #     current_words_pronunciation_accuracy)
 
         result = {'recording_transcript': recording_transcript,
                   'real_and_transcribed_words': real_and_transcribed_words,
                   'recording_ipa': recording_ipa, 'start_time': start_time, 'end_time': end_time,
                   'real_and_transcribed_words_ipa': real_and_transcribed_words_ipa, 'pronunciation_accuracy': pronunciation_accuracy,
-                  'pronunciation_categories': pronunciation_categories}
+                #   'pronunciation_categories': pronunciation_categories
+                  }
 
         return result
 
