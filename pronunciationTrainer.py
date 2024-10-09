@@ -93,7 +93,7 @@ class PronunciationTrainer:
             word_locations, mapped_words_indices)
 
         pronunciation_accuracy, current_words_pronunciation_accuracy = wm.calculate_pronunciation_accuracy_with_diff(
-            real_and_transcribed_words)  # _ipa
+            real_and_transcribed_words_ipa)  # _ipa
 
         # pronunciation_categories = self.getWordsPronunciationCategory(
         #     current_words_pronunciation_accuracy)

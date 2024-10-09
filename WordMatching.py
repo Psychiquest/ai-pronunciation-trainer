@@ -22,16 +22,30 @@ def calculate_pronunciation_accuracy_with_diff(real_and_transcribed_words_ipa):
     match_count = 0
     total_count = len(target_phonemes)
     penalty_count = 0  # Penalize for insertions and deletions
+    
+    clean_index = 1
 
-    for operation, phoneme in diff_result:
-        if operation == 'MATCH':
+    for char in target_phonemes:
+        
+        while clean_index < len(diff_result) and  diff_result[clean_index][1] == ' ':
+            clean_index +=1
+              
+        if char == ' ':
+            pass
+        elif char in string.punctuation:
+            pass # can be changed to match_string.append('1')
+            clean_index += 1
+        elif clean_index < len(diff_result) and diff_result[clean_index][0] == 'MATCH':
             match_count += 1
+            clean_index += 1
         else:
-            penalty_count += 1  # Penalize for each insertion or deletion
+            penalty_count += 1
+            clean_index += 1
 
-    # Calculate accuracy as the ratio of matching phonemes with penalties
-    effective_length = total_count + penalty_count  # Accounts for insertions
-    accuracy = match_count*100 / effective_length if effective_length > 0 else 0
+            if clean_index < len(diff_result)-1 and diff_result[clean_index][0] == "DELETE" and diff_result[clean_index+1][0] == "INSERT":
+                clean_index+=1
+
+    accuracy = match_count*100 / (match_count+ penalty_count)
     return accuracy, "100"
 
 
