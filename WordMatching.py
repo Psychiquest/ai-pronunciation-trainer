@@ -136,19 +136,27 @@ def generate_match_string(a, b):
     diff_result = myers_diff(a_clean, b_clean)
     
     match_string = []
-    clean_index = 0
+    clean_index = 1
 
     for char in a:
+        
+        while clean_index < len(diff_result) and  diff_result[clean_index][1] == ' ':
+            clean_index +=1
+              
         if char == ' ':
             match_string.append(' ')
-        if char in string.punctuation:
+        elif char in string.punctuation:
             match_string.append('1')
+            clean_index += 1
         elif clean_index < len(diff_result) and diff_result[clean_index][0] == 'MATCH':
             match_string.append('1')
+            clean_index += 1
         else:
+            if clean_index < len(diff_result)-1 and diff_result[clean_index][0] == "DELETE" and diff_result[clean_index+1][0] == "INSERT":
+                clean_index+=1
             match_string.append('0')
 
-        clean_index += 1
+            clean_index += 1
 
     return ''.join(match_string)
 
