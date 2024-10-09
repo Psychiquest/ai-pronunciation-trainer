@@ -20,18 +20,21 @@ def calculate_pronunciation_accuracy_with_diff(real_and_transcribed_words_ipa):
     diff_result = myers_diff_phonemes(target_phonemes, spoken_phonemes)
 
     match_count = 0
-    total_count = len(target_phonemes)
-    penalty_count = 0  # Penalize for insertions and deletions
-    
+    penalty_count = 0
     clean_index = 1
 
-    for char in target_phonemes:
-        
+    incorrect_words = 0
+    is_current_word_incorrect = False
+
+    total_words = len(target_phonemes.split(" "))
+
+    for char in target_phonemes:     
+   
         while clean_index < len(diff_result) and  diff_result[clean_index][1] == ' ':
             clean_index +=1
               
         if char == ' ':
-            pass
+            is_current_word_incorrect = False 
         elif char in string.punctuation:
             pass # can be changed to match_string.append('1')
             clean_index += 1
@@ -39,6 +42,9 @@ def calculate_pronunciation_accuracy_with_diff(real_and_transcribed_words_ipa):
             match_count += 1
             clean_index += 1
         else:
+            if not is_current_word_incorrect:
+                incorrect_words += 1
+                is_current_word_incorrect = True
             penalty_count += 1
             clean_index += 1
 
@@ -46,7 +52,7 @@ def calculate_pronunciation_accuracy_with_diff(real_and_transcribed_words_ipa):
                 clean_index+=1
 
     accuracy = match_count*100 / (match_count+ penalty_count)
-    return accuracy, "100"
+    return accuracy, incorrect_words, total_words
 
 
 # Myers Diff Algorithm (adapted for phonemes)

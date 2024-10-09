@@ -92,7 +92,7 @@ class PronunciationTrainer:
         start_time, end_time = self.getWordLocationsFromRecordInSeconds(
             word_locations, mapped_words_indices)
 
-        pronunciation_accuracy, current_words_pronunciation_accuracy = wm.calculate_pronunciation_accuracy_with_diff(
+        pronunciation_accuracy, incorrect_words, total_words = wm.calculate_pronunciation_accuracy_with_diff(
             real_and_transcribed_words_ipa)  # _ipa
 
         # pronunciation_categories = self.getWordsPronunciationCategory(
@@ -103,7 +103,7 @@ class PronunciationTrainer:
                   'recording_ipa': recording_ipa, 'start_time': start_time, 'end_time': end_time,
                   'real_and_transcribed_words_ipa': real_and_transcribed_words_ipa, 'pronunciation_accuracy': pronunciation_accuracy,
                 #   'pronunciation_categories': pronunciation_categories
-                  }
+                  'incorrect_words': incorrect_words, 'total_words': total_words}
 
         return result
 

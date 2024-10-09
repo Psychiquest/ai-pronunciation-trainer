@@ -85,7 +85,8 @@ def lambda_handler_file(event, context):
         #    'pair_accuracy_category': pair_accuracy_category,
            'start_time': result['start_time'],
            'end_time': result['end_time'],
-           'is_letter_correct_all_words': is_letter_correct_all_words}
+           'is_letter_correct_all_words': is_letter_correct_all_words,
+           'incorrect_words': result['incorrect_words'], 'total_words': result['total_words']}
 
     return json.dumps(res)
 
