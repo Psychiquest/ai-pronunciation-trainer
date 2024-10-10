@@ -28,28 +28,45 @@ def calculate_pronunciation_accuracy_with_diff(real_and_transcribed_words_ipa):
 
     total_words = len(target_phonemes.split(" "))
 
-    for char in target_phonemes:     
+    for char in target_phonemes:   
+
+        while clean_index < len(diff_result) and char == ' ' and diff_result[clean_index][1] != ' ':
+            penalty_count += 1
+
+            if clean_index < len(diff_result)-1 and diff_result[clean_index][0] == "DELETE" and diff_result[clean_index+1][0] == "INSERT":
+                clean_index += 1
+
+            clean_index += 1
    
+        # Remove spaces from diff_result
         while clean_index < len(diff_result) and  diff_result[clean_index][1] == ' ':
             clean_index +=1
               
+        # Check if current character is a space which means a new word
         if char == ' ':
             is_current_word_incorrect = False 
+
+        # Check if current character is a punctuation, so just ignore it
         elif char in string.punctuation:
             pass # can be changed to match_string.append('1')
             clean_index += 1
+
+        # Check if current character is a match
         elif clean_index < len(diff_result) and diff_result[clean_index][0] == 'MATCH':
             match_count += 1
             clean_index += 1
+
+        # Check if current character is something else, and if it's not marked as incorrect word, mark it as incorrect
         else:
             if not is_current_word_incorrect:
                 incorrect_words += 1
                 is_current_word_incorrect = True
-            penalty_count += 1
-            clean_index += 1
 
             if clean_index < len(diff_result)-1 and diff_result[clean_index][0] == "DELETE" and diff_result[clean_index+1][0] == "INSERT":
                 clean_index+=1
+
+            penalty_count += 1
+            clean_index += 1
 
     accuracy = match_count*100 / (match_count+ penalty_count)
     return accuracy, incorrect_words, total_words
@@ -159,6 +176,13 @@ def generate_match_string(a, b):
     clean_index = 1
 
     for char in a:
+
+        while clean_index < len(diff_result) and char == ' ' and diff_result[clean_index][1] != ' ':
+
+            if clean_index < len(diff_result)-1 and diff_result[clean_index][0] == "DELETE" and diff_result[clean_index+1][0] == "INSERT":
+                clean_index+=1
+
+            clean_index += 1
         
         while clean_index < len(diff_result) and  diff_result[clean_index][1] == ' ':
             clean_index +=1
