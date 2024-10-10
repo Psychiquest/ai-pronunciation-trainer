@@ -13,8 +13,8 @@ import string
 # Function to calculate phoneme-based pronunciation accuracy
 def calculate_pronunciation_accuracy_with_diff(real_and_transcribed_words_ipa):
     # Convert words to phonetic transcriptions
-    target_phonemes = " ".join([item[0] for item in real_and_transcribed_words_ipa])
-    spoken_phonemes = " ".join([item[1] for item in real_and_transcribed_words_ipa])
+    target_phonemes = " ".join([item[0].lower() for item in real_and_transcribed_words_ipa])
+    spoken_phonemes = " ".join([item[1].lower() for item in real_and_transcribed_words_ipa])
 
     # Get the diff result using Myers algorithm for phonemes
     diff_result = myers_diff_phonemes(target_phonemes, spoken_phonemes)
@@ -68,7 +68,8 @@ def calculate_pronunciation_accuracy_with_diff(real_and_transcribed_words_ipa):
             penalty_count += 1
             clean_index += 1
 
-    accuracy = match_count*100 / (match_count+ penalty_count)
+    # accuracy = match_count*100 / (match_count+ penalty_count)
+    accuracy = 100 - (incorrect_words/total_words)*100
     return accuracy, incorrect_words, total_words
 
 
