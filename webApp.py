@@ -18,18 +18,9 @@ rootPath = ''
 def main():
     return render_template('main.html')
 
-
-# @app.route(rootPath+'/getAudioFromText', methods=['POST'])
-# def getAudioFromText():
-#     event = {'body': json.dumps(request.get_json(force=True))}
-#     return lambdaTTS.lambda_handler(event, [])
-
-
-@app.route(rootPath+'/getSample', methods=['POST'])
-def getNext():
-    event = {'body':  json.dumps(request.get_json(force=True))}
-    return lambdaGetSample.lambda_handler(event, [])
-
+@app.route(rootPath+'/status')
+def status():
+    return "OK"
 
 @app.route(rootPath+'/GetAccuracyFromRecordedAudioFile', methods=['POST'])
 def GetAccuracyFromRecordedAudioFile():
